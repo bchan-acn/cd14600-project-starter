@@ -5,6 +5,7 @@ from balance.balance_observer import PrintObserver
 from transaction.transaction import Transaction
 from transaction.transaction_category import TransactionCategory
 from transaction.transaction_adapter import TransactionAdapter
+from transaction.transaction_factory import TransactionFactory
 from transaction.external_income_transaction import ExternalFreelanceIncome
 
 
@@ -15,10 +16,10 @@ def main():
 
     # Create standard transactions
     transactions = [
-        Transaction(100, TransactionCategory.INCOME),
-        Transaction(50, TransactionCategory.EXPENSE),
-        Transaction(200, TransactionCategory.INCOME),
-        Transaction(75, TransactionCategory.EXPENSE),
+        TransactionFactory.create("income", 100),
+        TransactionFactory.create("expense", 50),
+        TransactionFactory.income(200),
+        TransactionFactory.expense(75),
     ]
 
     # Create an external income transaction (via Adapter pattern)
