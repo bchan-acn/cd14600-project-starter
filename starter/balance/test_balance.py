@@ -17,6 +17,12 @@ class TestBalance(unittest.TestCase):
         balance2 = Balance.get_instance()
         self.assertIs(balance1, balance2)
 
+    def test_direct_construction_preserves_shared_balance(self):
+        self.balance.add_income(100)
+        direct_balance = Balance()
+        self.assertIs(direct_balance, self.balance)
+        self.assertEqual(direct_balance.get_balance(), 100)
+
     def test_add_income(self):
         self.balance.add_income(100)
         self.assertEqual(self.balance.get_balance(), 100)
