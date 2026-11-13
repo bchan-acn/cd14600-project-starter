@@ -54,5 +54,73 @@ class TestBalance(unittest.TestCase):
         self.balance.reset()
         self.assertEqual(self.balance.get_balance(), 0.0)
 
+    def test_summary(self):
+        self.balance.add_income(12.5)
+        self.assertEqual(self.balance.summary(), "Net balance: 12.50")
+
+    def test_observer_notified_with_balance_and_transaction(self):
+        class Recorder:
+            def __init__(self):
+                self.calls = []
+
+            def update(self, balance, transaction):
+                self.calls.append((balance.get_balance(), transaction))
+
+        recorder = Recorder()
+        self.balance.register_observer(recorder)
+        self.addCleanup(self.balance.unregister_observer, recorder)
+
+        t = Transaction(80, TransactionCategory.INCOME)
+        self.balance.apply_transaction(t)
+        self.assertEqual(recorder.calls, [(80, t)])
+
+    def test_duplicate_registration_notifies_once(self):
+        class Counter:
+            count = 0
+
+            def update(self, balance, transaction):
+                self.count += 1
+
+        counter = Counter()
+        self.balance.register_observer(counter)
+        self.balance.register_observer(counter)
+        self.addCleanup(self.balance.unregister_observer, counter)
+
+        self.balance.apply_transaction(Transaction(1, TransactionCategory.INCOME))
+        self.assertEqual(counter.count, 1)
+
+    def test_unregistered_observer_not_notified(self):
+        class Counter:
+            count = 0
+
+            def update(self, balance, transaction):
+                self.count += 1
+
+        counter = Counter()
+        self.balance.register_observer(counter)
+        self.balance.unregister_observer(counter)
+        self.balance.unregister_observer(counter)  # no error when absent
+
+        self.balance.apply_transaction(Transaction(1, TransactionCategory.INCOME))
+        self.assertEqual(counter.count, 0)
+
+    def test_invalid_transaction_does_not_notify(self):
+        class Counter:
+            count = 0
+
+            def update(self, balance, transaction):
+                self.count += 1
+
+        class FakeCategory:
+            pass
+
+        counter = Counter()
+        self.balance.register_observer(counter)
+        self.addCleanup(self.balance.unregister_observer, counter)
+
+        with self.assertRaises(ValueError):
+            self.balance.apply_transaction(Transaction(5, FakeCategory()))
+        self.assertEqual(counter.count, 0)
+
 if __name__ == "__main__":
     unittest.main()

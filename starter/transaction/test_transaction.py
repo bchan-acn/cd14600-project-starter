@@ -20,5 +20,20 @@ class TestTransaction(unittest.TestCase):
         self.assertEqual(t1, t2)
         self.assertNotEqual(t1, t3)
 
+    def test_transaction_inequality_different_category(self):
+        self.assertNotEqual(
+            Transaction(20, TransactionCategory.INCOME),
+            Transaction(20, TransactionCategory.EXPENSE),
+        )
+
+    def test_transaction_not_equal_to_other_types(self):
+        self.assertNotEqual(Transaction(20, TransactionCategory.INCOME), 20)
+
+    def test_equal_transactions_have_equal_hashes(self):
+        t1 = Transaction(20, TransactionCategory.EXPENSE)
+        t2 = Transaction(20, TransactionCategory.EXPENSE)
+        self.assertEqual(hash(t1), hash(t2))
+        self.assertEqual(len({t1, t2}), 1)
+
 if __name__ == "__main__":
     unittest.main()

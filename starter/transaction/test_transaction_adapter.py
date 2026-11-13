@@ -12,5 +12,28 @@ class TestTransactionAdapter(unittest.TestCase):
         txn = adapter.to_transaction()
         self.assertEqual(txn, Transaction(500, TransactionCategory.INCOME))
 
+    def test_adapter_converts_expense(self):
+        class ExternalExpense:
+            amount = 75
+            typ = "expense"
+
+        txn = TransactionAdapter(ExternalExpense()).to_transaction()
+        self.assertEqual(txn, Transaction(75, TransactionCategory.EXPENSE))
+
+    def test_adapter_rejects_unknown_type(self):
+        class ExternalUnknown:
+            amount = 10
+            typ = "refund"
+
+        with self.assertRaises(ValueError):
+            TransactionAdapter(ExternalUnknown()).to_transaction()
+
+    def test_adapter_rejects_missing_type(self):
+        class ExternalNoType:
+            amount = 10
+
+        with self.assertRaises(ValueError):
+            TransactionAdapter(ExternalNoType()).to_transaction()
+
 if __name__ == "__main__":
     unittest.main()
