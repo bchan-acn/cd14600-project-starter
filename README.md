@@ -57,6 +57,16 @@ python -m unittest balance/test_balance_observer.py
 6. Choose and Implement a Fourth Pattern – Pick one additional design pattern (e.g., Strategy, Command, Decorator, etc.) and integrate it into your project.
 7. Provide a Reflection – Add a short write-up in your repo (README or separate file) explaining your design choices.
 
+## Provide a Reflection
+
+A Factory Method fits because it puts creation in one place:
+
+- It is easy to extend.
+    - A new transaction kind, such as a refund or transfer, is one new entry in the factory's creators table. Balance, the adapter and the observers don't change.
+
+- It complements the Adapter.
+    -The Adapter converts external data into a Transaction. The Factory is the single way to create internal ones. Together, every Transaction comes from a controlled path.
+
 ## Built With
 
 * [Python](https://www.python.org/) – Main programming language
