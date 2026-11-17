@@ -31,8 +31,12 @@ def main():
 
     all_transactions = transactions + [adapted_transaction]
 
+    # Apply every transaction to the singleton Balance; each application
+    # notifies both registered observers (print + low-balance alert).
     for transaction in all_transactions:
         balance.apply_transaction(transaction)
+
+    print(f"Final balance: {balance.get_balance():.2f}")
 
 if __name__ == "__main__":
     main()
