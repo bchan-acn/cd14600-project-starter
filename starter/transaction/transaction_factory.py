@@ -8,8 +8,12 @@ class TransactionFactory:
     """Factory Method: creates Transaction objects from a category name."""
 
     _creators = {
-        "income": lambda amount: Transaction(amount, TransactionCategory.INCOME),
-        "expense": lambda amount: Transaction(amount, TransactionCategory.EXPENSE),
+        "income": lambda amount: Transaction(
+            amount, TransactionCategory.INCOME
+        ),
+        "expense": lambda amount: Transaction(
+            amount, TransactionCategory.EXPENSE
+        ),
     }
 
     @classmethod

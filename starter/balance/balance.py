@@ -2,6 +2,7 @@
 
 from transaction.transaction_category import TransactionCategory
 
+
 class Balance:
     """Singleton to track the balance."""
 
@@ -67,4 +68,3 @@ class Balance:
     def summary(self):
         """Return a summary string of the net balance."""
         return f"Net balance: {self._balance:.2f}"
-    
